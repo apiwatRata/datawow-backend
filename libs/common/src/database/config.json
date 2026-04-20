@@ -1,0 +1,17 @@
+{
+  "development": {
+    "url": "postgresql://admin:p@ssw0rd@127.0.0.1:5432/datawow",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "test": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "logging": false
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "logging": false
+  }
+}
