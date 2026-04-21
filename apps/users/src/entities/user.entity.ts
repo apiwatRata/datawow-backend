@@ -7,42 +7,24 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
  })
 export class User extends Model<User> {
   @Column({
-    type: DataType.STRING,
+    type: DataType.STRING(255),
     allowNull: false,
-    unique: true
-  })
-  username: string;
-
-  @Column({
-    type: DataType.DATEONLY,
-    allowNull: false,
-  })
-  birth_date: Date;
-
-  @Column({
-    type: DataType.STRING,
     unique: true,
-    allowNull: false,
   })
-  email: string;
+  email: String;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.STRING(255),
     allowNull: false,
   })
-  password: string;
+  password_hash: String;
 
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.ENUM('ADMIN', 'USER'),
     allowNull: false,
-  })
-  sex: Number;
-
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  role_id: Number;
+    defaultValue: 'USER',
+})
+  role: String;
 
   @Column({
     type: DataType.DATE,

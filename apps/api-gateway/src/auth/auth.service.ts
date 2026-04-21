@@ -1,26 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
-
+import { Injectable, Inject } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
+import { LoginAuthDto } from './dto/login-auth.dto';
+import { KAFKA_TOPICS } from '../../../../libs/contracts/src/kafka.topics';
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(@Inject('AUTH_SERVICE') private authClient: ClientKafka) {}
+
+  async onModuleInit() {
+        const topics = Object.values(KAFKA_TOPICS.AUTH);
+        topics.forEach(t => this.authClient.subscribeToResponseOf(t));
+        await this.authClient.connect();
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  login(loginAuthDto: LoginAuthDto) {
+    return this.authClient.send<LoginAuthDto>(KAFKA_TOPICS.AUTH.LOGIN, loginAuthDto);
   }
 }
