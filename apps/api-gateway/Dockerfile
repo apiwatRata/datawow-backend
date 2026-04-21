@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN npm run build api-gateway        # ← ระบุชื่อ app ที่จะ build
+RUN npm run build api-gateway        
 
 FROM node:20-alpine AS production
 WORKDIR /app

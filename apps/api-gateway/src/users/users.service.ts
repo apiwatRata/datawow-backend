@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { UserDto } from './dto/user.dto';
-import { KAFKA_TOPICS } from '../../../../libs/kafka.topics';
+import { KAFKA_TOPICS } from '../../../../libs/contracts/src/kafka.topics';
 @Injectable()
 export class UsersService {
   constructor(@Inject('USERS_SERVICE') private usersClient: ClientKafka) {}
