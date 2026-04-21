@@ -1,6 +1,6 @@
 {
   "development": {
-    "url": "postgresql://admin:p@ssw0rd@127.0.0.1:5432/datawow",
+    "url": "DATABASE_URL",
     "dialect": "postgres",
     "logging": false
   },

@@ -37,6 +37,15 @@
         "tsConfigPath": "apps/backend/tsconfig.app.json"
       }
     },
+    "concerts": {
+      "type": "application",
+      "root": "apps/concerts",
+      "entryFile": "main",
+      "sourceRoot": "apps/concerts/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/concerts/tsconfig.app.json"
+      }
+    },
     "users": {
       "type": "application",
       "root": "apps/users",
