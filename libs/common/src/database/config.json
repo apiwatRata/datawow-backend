@@ -1,6 +1,6 @@
 {
   "development": {
-    "use_env_variable": "DATABASE_URL",
+    "url": "postgres://admin:p@ssw0rd@localhost:5432/datawow",
     "dialect": "postgres",
     "logging": false
   },

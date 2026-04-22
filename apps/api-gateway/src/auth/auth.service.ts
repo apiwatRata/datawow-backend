@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { LoginAuthDto } from './dto/login-auth.dto';
+import { LoginResponseDto } from 'libs/contracts/src/auth/login-response.dto';
 import { KAFKA_TOPICS } from '../../../../libs/contracts/src/kafka.topics';
 @Injectable()
 export class AuthService {
@@ -13,6 +14,6 @@ export class AuthService {
   }
 
   login(loginAuthDto: LoginAuthDto) {
-    return this.authClient.send<LoginAuthDto>(KAFKA_TOPICS.AUTH.LOGIN, loginAuthDto);
+    return this.authClient.send<LoginResponseDto>(KAFKA_TOPICS.AUTH.LOGIN, loginAuthDto);
   }
 }
