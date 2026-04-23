@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { ResponseCode } from 'libs/common/src/enums/response_code.enum';
 import { firstValueFrom } from 'rxjs';
-import { ErrorMessage } from 'libs/common/src/enums/error_message.enum';
+import { ResponseMessage } from 'libs/common/src/enums/response_message.enum';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +26,7 @@ export class AuthController {
       }
 
       throw new HttpException(
-        ErrorMessage.INTERNAL_SERVER_ERROR,
+        ResponseMessage.INTERNAL_SERVER_ERROR,
         ResponseCode.INTERNAL_SERVER_ERROR,
       );
     });

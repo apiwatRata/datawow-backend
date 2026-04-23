@@ -1,9 +1,9 @@
 import { UserDto } from "../users/user.dto";
 
 export class LoginResponseDto {
-    status: String;
+    status: string;
     status_code: number;
-    message: String;
+    message: string;
     user?: UserDto;
-    access_token?: String;
+    access_token?: string;
 }

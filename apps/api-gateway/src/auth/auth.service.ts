@@ -21,7 +21,7 @@ export class AuthService {
     return this.authClient.send<LoginResponseDto>(KAFKA_TOPICS.AUTH.LOGIN, loginAuthDto);
   }
 
-  async generateToken(payload?: UserDto) : Promise<String>{
+  async generateToken(payload?: UserDto) : Promise<string>{
     if(!payload) return '';
     return await this.jwtService.signAsync(payload)
   }

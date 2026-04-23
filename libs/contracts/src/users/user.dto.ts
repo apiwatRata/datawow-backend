@@ -1,6 +1,6 @@
 export class UserDto {
-    id: String;
-    email: String;
-    password?: String;
-    role: String;
+    id: string;
+    email: string;
+    password?: string;
+    role?: string;
 }

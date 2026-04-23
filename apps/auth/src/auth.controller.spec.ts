@@ -3,7 +3,7 @@ import { compare } from 'bcrypt';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ResponseCode } from '../../../libs/common/src/enums/response_code.enum';
-import { ErrorMessage } from '../../../libs/common/src/enums/error_message.enum';
+import { ErrorMessage } from '../../../libs/common/src/enums/response_message.enum';
 
 jest.mock('bcrypt', () => ({
   compare: jest.fn(),

@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-
+import { RegisterDto } from 'libs/contracts/src/users/register.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/auth-role.guard';
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -12,15 +12,17 @@ export class UsersController {
   //   return this.usersService.create(createUserDto);
   // }
 
+  @UseGuards(AuthGuard,AdminGuard)
   @Get()
   findAll() {
     return this.usersService.findAll();
   }
 
-  // @Post()
-  // register() {
-  //   return this.
-  // }
+  @Post()
+  register(@Body() registerDto: RegisterDto) {
+    return this.usersService.register(registerDto);
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.usersService.findOne(+id);
