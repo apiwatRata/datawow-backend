@@ -16,7 +16,10 @@ export class AuthController {
       if (res.status === 'error') {
         throw new HttpException(res.message, res.status_code);
       }
-      return res;
+      return this.authService.generateToken(res.user).then(token =>  {
+        res.access_token = token;
+        return res;
+      });
     }).catch(err => {
       if (err instanceof HttpException) {
         throw err;

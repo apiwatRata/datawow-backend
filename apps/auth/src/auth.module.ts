@@ -3,6 +3,8 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { User } from '../../users/src/entities/user.entity';
 import { SequelizeModule } from '@nestjs/sequelize';
+import { jwtConstants } from './constants';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -17,6 +19,11 @@ import { SequelizeModule } from '@nestjs/sequelize';
       models: [User],
     }),
     SequelizeModule.forFeature([User]),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '1h' },
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService],

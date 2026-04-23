@@ -5,4 +5,5 @@ export class LoginResponseDto {
     status_code: number;
     message: String;
     user?: UserDto;
+    access_token?: String;
 }

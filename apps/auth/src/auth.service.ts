@@ -6,11 +6,10 @@ import { LoginAuthDto } from '../../../libs/contracts/src/auth/login-auth.dto';
 import { LoginResponseDto } from '../../../libs/contracts/src/auth/login-response.dto';
 import { ResponseCode } from '../../../libs/common/src/enums/response_code.enum';
 import { ErrorMessage } from '../../../libs/common/src/enums/error_message.enum';
-const SALT_ROUNDS = 10;
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectModel(User) private userModel: typeof User,) {}
+  constructor(@InjectModel(User) private userModel: typeof User) {}
    
   async login(data: LoginAuthDto): Promise<LoginResponseDto> {
 

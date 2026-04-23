@@ -17,6 +17,10 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  // @Post()
+  // register() {
+  //   return this.
+  // }
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.usersService.findOne(+id);
