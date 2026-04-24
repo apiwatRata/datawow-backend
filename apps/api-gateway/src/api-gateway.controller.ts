@@ -6,9 +6,4 @@ import { AdminGuard } from './auth/auth-role.guard';
 export class ApiGatewayController {
   constructor(private readonly apiGatewayService: ApiGatewayService) {}
   
-  @UseGuards(AuthGuard,AdminGuard)
-  @Get('test-auth')
-  getHello(): string {
-    return this.apiGatewayService.getHello();
-  }
 }

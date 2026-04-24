@@ -1,35 +1,37 @@
-import { Controller } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Get, Post, Patch, UseGuards } from '@nestjs/common';
+import { MessagePattern, Payload  } from '@nestjs/microservices';
 import { ReservationsService } from './reservations.service';
-import { CreateReservationDto } from './dto/create-reservation.dto';
-import { UpdateReservationDto } from './dto/update-reservation.dto';
+import { CreateReservationDto } from 'libs/contracts/src/reservation/create-reservation.dto';
+import { GetReservationDto } from 'libs/contracts/src/reservation/get-reservation.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/auth-role.guard';
 
-@Controller()
+@Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
-  @MessagePattern('createReservation')
-  create(@Payload() createReservationDto: CreateReservationDto) {
-    return this.reservationsService.create(createReservationDto);
+  @Post('reserve/:concert_id/user/:user_id')
+  @UseGuards(AuthGuard)
+  reserve(@Payload() createReservationDto: CreateReservationDto) {
+    return this.reservationsService.reserve(createReservationDto);
   }
 
-  @MessagePattern('findAllReservations')
-  findAll() {
-    return this.reservationsService.findAll();
+  @Post('cancel/:reservation_id')
+  @UseGuards(AuthGuard)
+  cancel(@Payload() reservation_id: string) {
+    return this.reservationsService.cancel(reservation_id);
   }
 
-  @MessagePattern('findOneReservation')
-  findOne(@Payload() id: number) {
-    return this.reservationsService.findOne(id);
+  @Get('personal/:user_id')
+  @UseGuards(AuthGuard)
+  getPersonalReservations(@Payload() user_id: string, getReservationDto: GetReservationDto ) {
+    return this.reservationsService.getPersonalReservations(user_id, getReservationDto);
   }
 
-  @MessagePattern('updateReservation')
-  update(@Payload() updateReservationDto: UpdateReservationDto) {
-    return this.reservationsService.update(updateReservationDto.id, updateReservationDto);
+  @Get()
+  @UseGuards(AuthGuard, AdminGuard)
+  getAllReservations(@Payload() getReservationDto: GetReservationDto) {
+    return this.reservationsService.getAllReservations(getReservationDto);
   }
 
-  @MessagePattern('removeReservation')
-  remove(@Payload() id: number) {
-    return this.reservationsService.remove(id);
-  }
 }

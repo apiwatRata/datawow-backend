@@ -16,7 +16,7 @@ export class Reservation extends Model<
     primaryKey: true,
     allowNull: false,
   })
-  id: string;
+  declare id?: string;
 
   @Column({
     type: DataType.UUID,
@@ -41,7 +41,7 @@ export class Reservation extends Model<
     allowNull: false,
     defaultValue: 'active',
   })
-  status: string;
+  status?: string;
 
   @Column({
     type: DataType.DATE,

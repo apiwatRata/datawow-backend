@@ -6,4 +6,6 @@ export enum ResponseMessage {
     FORBIDDEN = 'Permission Denied',
     SUCCESS = 'Successful',
     LOGIN_SUCCESS = 'Login successful',
+    NOT_FOUND = 'Resource not found',
+    CONFLICT = 'Duplicate resource exists',
 }   

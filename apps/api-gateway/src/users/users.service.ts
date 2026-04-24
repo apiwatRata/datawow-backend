@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { UserDto } from './dto/user.dto';
-import { KAFKA_TOPICS } from '../../../../libs/contracts/src/kafka.topics';
-import { RegisterDto } from './dto/register.dto';
+import { KAFKA_TOPICS } from 'libs/contracts/src/kafka.topics';
+import { RegisterDto } from 'libs/contracts/src/users/register.dto';
 
 @Injectable()
 export class UsersService {

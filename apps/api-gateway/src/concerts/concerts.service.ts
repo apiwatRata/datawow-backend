@@ -1,26 +1,38 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
+import { KAFKA_TOPICS } from '../../../../libs/contracts/src/kafka.topics';
+import { ConcertDto } from 'libs/contracts/src/concert/concert.dto';
+import { GetConcertDto } from 'libs/contracts/src/concert/get-concert.dto';
 
 @Injectable()
 export class ConcertsService {
-  create(createConcertDto: CreateConcertDto) {
-    return 'This action adds a new concert';
+  constructor(@Inject('CONCERTS_SERVICE') private concertsClient: ClientKafka) {}
+
+   async onModuleInit() {
+      const topics = Object.values(KAFKA_TOPICS.CONCERTS);
+      topics.forEach(t => this.concertsClient.subscribeToResponseOf(t));
+      await this.concertsClient.connect();
+    }
+
+  createConcert(createConcertDto: CreateConcertDto) {
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.CREATE, createConcertDto);
   }
 
-  findAll() {
-    return `This action returns all concerts`;
+  getAllConcerts(filter: GetConcertDto) {
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_ALL, {filter});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} concert`;
+  getConcertById(id: string) {
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_BY_ID, id);
   }
 
-  update(id: number, updateConcertDto: UpdateConcertDto) {
-    return `This action updates a #${id} concert`;
+  updateConcert(id: string, concertDto: ConcertDto) {
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.UPDATE, { id, concertDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} concert`;
+  deleteConcert(id: string) {
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.DELETE, id);
   }
 }

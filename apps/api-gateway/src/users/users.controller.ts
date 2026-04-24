@@ -3,14 +3,10 @@ import { UsersService } from './users.service';
 import { RegisterDto } from 'libs/contracts/src/users/register.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { AdminGuard } from '../auth/auth-role.guard';
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
 
   @UseGuards(AuthGuard,AdminGuard)
   @Get()
@@ -23,18 +19,4 @@ export class UsersController {
     return this.usersService.register(registerDto);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
 }

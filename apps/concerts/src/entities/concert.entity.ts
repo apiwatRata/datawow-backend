@@ -10,17 +10,18 @@ export class Concert extends Model<
   InferAttributes<Concert>,
   InferCreationAttributes<Concert>
 > {
+
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
     primaryKey: true,
-    allowNull: false,
   })
-  id: string;
+  declare id?: string;
 
   @Column({
     type: DataType.STRING(255),
     allowNull: false,
+    unique: true,
   })
   name: string;
 
@@ -28,7 +29,7 @@ export class Concert extends Model<
     type: DataType.TEXT,
     allowNull: true,
   })
-  description: string;
+  description?: string;
 
   @Column({
     type: DataType.INTEGER,
@@ -42,12 +43,19 @@ export class Concert extends Model<
     allowNull: false,
     defaultValue: 0,
   })
-  reserved_seats: number;
+  reserved_seats?: number;
 
+  @Column({
+    type: DataType.DATE,
+    allowNull: false,
+    defaultValue: DataType.NOW,
+  })
+  event_date: Date;
+  
   @Column({
     type: DataType.DATE,
     allowNull: true,
   })
-  deleted_at?: Date;
+  deleted_at?: Date | null;
 
 }

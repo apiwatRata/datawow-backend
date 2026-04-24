@@ -1,35 +1,44 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Delete, Patch, Query } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ConcertsService } from './concerts.service';
 import { CreateConcertDto } from './dto/create-concert.dto';
 import { UpdateConcertDto } from './dto/update-concert.dto';
-
-@Controller()
+import { ConcertDto } from 'libs/contracts/src/concert/concert.dto';
+import { GetConcertDto } from 'libs/contracts/src/concert/get-concert.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/auth-role.guard';
+@Controller('concerts')
 export class ConcertsController {
   constructor(private readonly concertsService: ConcertsService) {}
 
-  @MessagePattern('createConcert')
+
+  @Post('create')
+  @UseGuards(AuthGuard, AdminGuard)
   create(@Payload() createConcertDto: CreateConcertDto) {
-    return this.concertsService.create(createConcertDto);
+    return this.concertsService.createConcert(createConcertDto);
   }
 
-  @MessagePattern('findAllConcerts')
-  findAll() {
-    return this.concertsService.findAll();
+  @Get()
+  @UseGuards(AuthGuard)
+  findAll(@Query() query: GetConcertDto) {
+    return this.concertsService.getAllConcerts(query);
   }
 
-  @MessagePattern('findOneConcert')
-  findOne(@Payload() id: number) {
-    return this.concertsService.findOne(id);
+  @Get(':id')
+  @UseGuards(AuthGuard)
+  findOne(@Payload() id: string) {
+    return this.concertsService.getConcertById(id);
   }
 
-  @MessagePattern('updateConcert')
-  update(@Payload() updateConcertDto: UpdateConcertDto) {
-    return this.concertsService.update(updateConcertDto.id, updateConcertDto);
+  @UseGuards(AuthGuard, AdminGuard)
+  @Patch(':id')
+  update(@Payload() id: string , updateConcertDto: ConcertDto) {
+    return this.concertsService.updateConcert(id, updateConcertDto);
   }
 
-  @MessagePattern('removeConcert')
-  remove(@Payload() id: number) {
-    return this.concertsService.remove(id);
+  @UseGuards(AuthGuard, AdminGuard)
+  @Delete(':id')
+  remove(@Payload() id: string) {
+    return this.concertsService.deleteConcert(id);
   }
 }

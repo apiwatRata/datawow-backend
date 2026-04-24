@@ -7,13 +7,11 @@ import { ResponseCode } from 'libs/common/src/enums/response_code.enum';
 import { ResponseMessage } from 'libs/common/src/enums/response_message.enum';
 import { ResponseDto } from 'libs/contracts/src/response.dto';
 import { genSalt, hash } from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
+
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User) private userModel: typeof User) {}
-
-  getHello(): string {
-    return 'Hello World!';
-  }
 
   async register(registerDto: RegisterDto): Promise<ResponseDto> {
     const user_exists = await this.userModel.findOne({ where: { email: registerDto.email } });
@@ -24,7 +22,7 @@ export class UsersService {
     const password_hash = await hash(registerDto.password, salt);
 
     let user = await this.userModel.create({ email: registerDto.email, password_hash: password_hash });
-    user = user.toJSON();
-    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [{ id: user.id, email: user.email, role: user.role }] };
+    const userDto = plainToInstance(UserDto, user);
+    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [userDto] };
   }
 }

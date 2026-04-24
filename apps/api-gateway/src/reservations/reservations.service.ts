@@ -1,26 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { CreateReservationDto } from './dto/create-reservation.dto';
-import { UpdateReservationDto } from './dto/update-reservation.dto';
+import { Injectable, Inject } from '@nestjs/common';
+import { ClientKafka } from '@nestjs/microservices';
+import { GetReservationDto } from 'libs/contracts/src/reservation/get-reservation.dto';
+import { KAFKA_TOPICS } from '../../../../libs/contracts/src/kafka.topics';
+import { CreateReservationDto } from 'libs/contracts/src/reservation/create-reservation.dto';
 
 @Injectable()
 export class ReservationsService {
-  create(createReservationDto: CreateReservationDto) {
-    return 'This action adds a new reservation';
+  constructor(@Inject('RESERVATIONS_SERVICE') private reservationsClient: ClientKafka) {}
+
+  async onModuleInit() {
+    const topics = Object.values(KAFKA_TOPICS.RESERVATIONS);
+    topics.forEach(t => this.reservationsClient.subscribeToResponseOf(t));
+    await this.reservationsClient.connect();
   }
 
-  findAll() {
-    return `This action returns all reservations`;
+  reserve(createReservationDto: CreateReservationDto) {
+    return this.reservationsClient.send(KAFKA_TOPICS.RESERVATIONS.RESERVE, createReservationDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} reservation`;
+  cancel(reservation_id: string) {
+    return this.reservationsClient.send(KAFKA_TOPICS.RESERVATIONS.CANCEL, { reservation_id });
   }
 
-  update(id: number, updateReservationDto: UpdateReservationDto) {
-    return `This action updates a #${id} reservation`;
+  getPersonalReservations(user_id: string, getReservationDto: GetReservationDto ) {
+    return this.reservationsClient.send(KAFKA_TOPICS.RESERVATIONS.GET_PERSONAL, { user_id, getReservationDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} reservation`;
+  getAllReservations(getReservationDto: GetReservationDto) {
+    return this.reservationsClient.send(KAFKA_TOPICS.RESERVATIONS.GET_ALL, getReservationDto);
   }
+
 }
