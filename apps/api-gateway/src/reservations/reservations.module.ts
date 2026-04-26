@@ -12,7 +12,7 @@ import { AuthModule } from '../auth/auth.module';
               options: {
                 client: {
                   clientId: 'reservations',
-                  brokers: ['localhost:9092'],
+                  brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
                 },
                 consumer: {
                   groupId: 'reservations-consumer',

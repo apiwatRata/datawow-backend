@@ -12,7 +12,7 @@ import { AuthModule } from 'apps/api-gateway/src/auth/auth.module';
             options: {
               client: {
                 clientId: 'concerts',
-                brokers: ['localhost:9092'],
+                brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
               },
               consumer: {
                 groupId: 'concerts-consumer',

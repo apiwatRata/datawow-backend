@@ -6,6 +6,8 @@ import { LoginAuthDto } from '../../../libs/contracts/src/auth/login-auth.dto';
 import { LoginResponseDto } from '../../../libs/contracts/src/auth/login-response.dto';
 import { ResponseCode } from '../../../libs/common/src/enums/response_code.enum';
 import { ResponseMessage } from '../../../libs/common/src/enums/response_message.enum';
+import { plainToInstance } from 'class-transformer';
+import { UserDto } from 'libs/contracts/src/users/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +25,6 @@ export class AuthService {
       return { status: 'error', status_code: ResponseCode.BAD_REQUEST, message: ResponseMessage.INVALID_PARAMETER } ;
     }
 
-    return { status: 'success', status_code: 200, message: ResponseMessage.LOGIN_SUCCESS, user: { id: user.id, email: user.email, role: user.role } };
+    return { status: 'success', status_code: 200, message: ResponseMessage.LOGIN_SUCCESS, user: plainToInstance(UserDto, user) };
   }
 }

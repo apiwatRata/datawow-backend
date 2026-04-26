@@ -15,19 +15,8 @@ export class ResponseDto{
     message: string;
 
     @IsOptional()
-    data?: UserDto[] | ConcertDto[] | ReservationDto[] 
-    ;
-    @IsOptional()
-    meta?: {
-        @IsBoolean()
-        cache_hit: boolean;
+    data?: UserDto[] | ConcertDto[] | ReservationDto[] ;
 
-        @IsDate()
-        generated_at: Date;
-
-        @IsNumber()
-        total_count: number;
-    };
     @IsOptional()
     @IsNumber()
     page?: number;
@@ -39,4 +28,17 @@ export class ResponseDto{
     @IsOptional()
     @IsNumber()
     total_pages?: number;
+
+    @IsOptional()
+    meta?: {
+
+        @IsBoolean()
+        cache_hit?: boolean;
+
+        @IsDate()
+        generated_at?: Date;
+
+        @IsNumber()
+        total_count?: number;
+    };
 }

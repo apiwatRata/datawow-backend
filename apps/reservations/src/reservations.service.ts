@@ -6,6 +6,8 @@ import { CreateReservationDto } from 'libs/contracts/src/reservation/create-rese
 import { ResponseDto } from 'libs/contracts/src/response.dto';
 import { ResponseCode } from 'libs/common/src/enums/response_code.enum';
 import { ResponseMessage } from 'libs/common/src/enums/response_message.enum';
+import { plainToInstance } from 'class-transformer';
+import { ReservationDto } from 'libs/contracts/src/reservation/reservation.dto';
 
 @Injectable()
 export class ReservationsService {
@@ -17,13 +19,8 @@ export class ReservationsService {
       return { status: 'error', status_code: ResponseCode.CONFLICT, message: ResponseMessage.CONFLICT };
     }
     let reserved = await this.reservationModel.create({ concert_id: createReservationDto.concert_id, user_id: createReservationDto.user_id });
-    reserved = reserved.toJSON();
-    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [{
-      id: reserved.id,
-      concert_id: reserved.concert_id,
-      user_id: reserved.user_id,
-      status: reserved.status,
-    }] };
+    const reservationDto = plainToInstance(ReservationDto, reserved);
+    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [reservationDto] };
   }
 
   async cancel(reservation_id: string): Promise<ResponseDto> {
@@ -32,12 +29,8 @@ export class ReservationsService {
       return { status: 'error', status_code: ResponseCode.NOT_FOUND, message: ResponseMessage.NOT_FOUND };
     }
     await reserved.update({ status: 'cancelled' });
-    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [{
-      id: reserved.id,
-      concert_id: reserved.concert_id,
-      user_id: reserved.user_id,
-      status: reserved.status,
-    }] };
+    const reservationDto = plainToInstance(ReservationDto, reserved);
+    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [reservationDto] };
   }
 
   async getPersonalReservations(user_id: string, filter: GetReservationDto ): Promise<ResponseDto> {
@@ -55,14 +48,7 @@ export class ReservationsService {
     if (reservations.length === 0) {
           return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [] };
     }
-    const data = reservations.map(reservation => {
-      return {
-        id: reservation.id,
-        concert_id: reservation.concert_id,
-        user_id: reservation.user_id,
-        status: reservation.status
-      };
-    });
+    const data = plainToInstance(ReservationDto, reservations);
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: data };
   }
 
@@ -80,14 +66,7 @@ export class ReservationsService {
     if (reservations.length === 0) {
           return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [] };
     }
-    const data = reservations.map(reservation => {
-      return {
-        id: reservation.id,
-        concert_id: reservation.concert_id,
-        user_id: reservation.user_id,
-        status: reservation.status
-      };
-    });
+    const data = plainToInstance(ReservationDto, reservations);
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: data };
   } 
 }
