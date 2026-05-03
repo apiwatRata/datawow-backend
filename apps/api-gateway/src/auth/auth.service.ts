@@ -54,4 +54,17 @@ export class AuthService {
   validateJwtUser(userId: string){
     return this.authClient.send<ResponseDto>(KAFKA_TOPICS.AUTH.VERIFY, { userId });
   }
+
+  validateRefreshToken(userId: string){
+    return this.authClient.send<ResponseDto>(KAFKA_TOPICS.AUTH.VERIFY, { userId });
+  }
+
+  async refreshToken(user: UserDto): Promise<{user: UserDto, accessToken: string, refreshToken: string}>{
+    const { accessToken, refreshToken } = await this.generateTokens(user);
+    return {
+      user,
+      accessToken,
+      refreshToken
+    }
+  }
 }

@@ -3,33 +3,33 @@ import { MessagePattern, Payload  } from '@nestjs/microservices';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from 'libs/contracts/src/reservation/create-reservation.dto';
 import { GetReservationDto } from 'libs/contracts/src/reservation/get-reservation.dto';
-import { AuthGuard } from '../auth/auth.guard';
-import { AdminGuard } from '../auth/auth-role.guard';
+import { Role } from "libs/common/src/enums/roles.enum"
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
+  @Roles([Role.USER, Role.ADMIN])
   @Post('reserve/:concert_id/user/:user_id')
-  @UseGuards(AuthGuard)
   reserve(@Payload() createReservationDto: CreateReservationDto) {
     return this.reservationsService.reserve(createReservationDto);
   }
 
+  @Roles([Role.USER, Role.ADMIN])
   @Post('cancel/:reservation_id')
-  @UseGuards(AuthGuard)
   cancel(@Payload() reservation_id: string) {
     return this.reservationsService.cancel(reservation_id);
   }
 
+  @Roles([Role.USER, Role.ADMIN])
   @Get('personal/:user_id')
-  @UseGuards(AuthGuard)
   getPersonalReservations(@Payload() user_id: string, getReservationDto: GetReservationDto ) {
     return this.reservationsService.getPersonalReservations(user_id, getReservationDto);
   }
 
+  @Roles([Role.ADMIN])
   @Get()
-  @UseGuards(AuthGuard, AdminGuard)
   getAllReservations(@Payload() getReservationDto: GetReservationDto) {
     return this.reservationsService.getAllReservations(getReservationDto);
   }
