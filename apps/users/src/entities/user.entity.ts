@@ -41,6 +41,6 @@ export class User extends Model<
     type: DataType.DATE,
     allowNull: true,
   })
-  deleted_at?: Date;
+  deleted_at?: Date | null;
 
 }

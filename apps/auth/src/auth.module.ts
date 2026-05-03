@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { User } from '../../users/src/entities/user.entity';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { jwtConstants } from './constants';
+import { jwtConstants } from 'libs/contracts/src/auth/constants';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({

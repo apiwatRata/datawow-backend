@@ -1,35 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res, HttpException, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginAuthDto } from './dto/login-auth.dto';
-import { ResponseCode } from 'libs/common/src/enums/response_code.enum';
-import { firstValueFrom } from 'rxjs';
-import { ResponseMessage } from 'libs/common/src/enums/response_message.enum';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Body() loginAuthDto: LoginAuthDto) {
-    let result = firstValueFrom(this.authService.login(loginAuthDto));
-    return result.then(res => {
-      if (res.status === 'error') {
-        throw new HttpException(res.message, res.status_code);
-      }
-      return this.authService.generateToken(res.user).then(token =>  {
-        res.access_token = token;
-        return res;
-      });
-    }).catch(err => {
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new HttpException(
-        ResponseMessage.INTERNAL_SERVER_ERROR,
-        ResponseCode.INTERNAL_SERVER_ERROR,
-      );
+  login(@Request() req) {
+    return this.authService.login({
+      id: req.user.id,
+      email: req.user.email,
+      role: req.user.role,
     });
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('protected')
+  getAll(){
+    return "Now you can access this protected API";
+  }
 }

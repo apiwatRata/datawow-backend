@@ -6,7 +6,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { AuthGuard } from './auth.guard';
 import { AdminGuard } from './auth-role.guard';
-
+import { LocalStrategy } from './strategies/local.strategy';
+import jwtConfig from './config/jwt.config';
+import { ConfigModule } from "@nestjs/config";
+import { JwtStrategy } from './strategies/jwt.strategy';
 @Module({
   imports:[
       ClientsModule.register([
@@ -24,14 +27,11 @@ import { AdminGuard } from './auth-role.guard';
           },
         },
       ]),
-      JwtModule.register({
-        global: true,
-        secret: jwtConstants.secret,
-        signOptions: { expiresIn: '1h' },
-      })
+      JwtModule.registerAsync(jwtConfig.asProvider()),
+      ConfigModule.forFeature(jwtConfig),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthGuard, AdminGuard],
-  exports: [AuthGuard, AdminGuard]
+  providers: [AuthService, AuthGuard, AdminGuard, LocalStrategy, JwtStrategy],
+  exports: [AuthGuard, AdminGuard, JwtModule]
 })
 export class AuthModule {}

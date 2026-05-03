@@ -8,6 +8,8 @@ import { ResponseCode } from '../../../libs/common/src/enums/response_code.enum'
 import { ResponseMessage } from '../../../libs/common/src/enums/response_message.enum';
 import { plainToInstance } from 'class-transformer';
 import { UserDto } from 'libs/contracts/src/users/user.dto';
+import { ResponseDto } from 'libs/contracts/src/response.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +17,7 @@ export class AuthService {
    
   async login(data: LoginAuthDto): Promise<LoginResponseDto> {
 
-    const users = await this.userModel.findAll({ where: { email: data.email } });
+    const users = await this.userModel.findAll({ where: { email: data.email , deleted_at: {[Op.is]: null}  } });
     if (users.length === 0) {
       return { status: 'error', status_code: ResponseCode.NOT_FOUND, message: ResponseMessage.USER_NOT_FOUND };
     }
@@ -27,4 +29,22 @@ export class AuthService {
 
     return { status: 'success', status_code: 200, message: ResponseMessage.LOGIN_SUCCESS, user: plainToInstance(UserDto, user) };
   }
+
+  async validateJwtUser(userId: string): Promise<ResponseDto> {
+    const user = await this.userModel.findOne(
+      {
+        attributes: ['id', 'email', 'role'],
+        where: { 
+          id: userId,
+          deleted_at: {[Op.is]: null} 
+        } 
+      }
+    );
+    if (!user) {
+      return { status: 'error', status_code: ResponseCode.NOT_FOUND, message: ResponseMessage.USER_NOT_FOUND };
+    }
+    return { status: 'success', status_code: 200, message: ResponseMessage.LOGIN_SUCCESS, data: [plainToInstance(UserDto, user.toJSON())] };
+  }
 }
+
+
