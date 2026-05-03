@@ -10,6 +10,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 import jwtConfig from './config/jwt.config';
 import { ConfigModule } from "@nestjs/config";
 import { JwtStrategy } from './strategies/jwt.strategy';
+import refreshConfig from './config/refresh.config';
 @Module({
   imports:[
       ClientsModule.register([
@@ -29,6 +30,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       ]),
       JwtModule.registerAsync(jwtConfig.asProvider()),
       ConfigModule.forFeature(jwtConfig),
+      ConfigModule.forFeature(refreshConfig),
   ],
   controllers: [AuthController],
   providers: [AuthService, AuthGuard, AdminGuard, LocalStrategy, JwtStrategy],

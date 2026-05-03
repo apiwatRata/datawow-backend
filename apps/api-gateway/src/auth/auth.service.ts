@@ -8,13 +8,17 @@ import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { ResponseDto } from 'libs/contracts/src/response.dto';
-
+import refreshConfig from './config/refresh.config';
+import type { ConfigType } from '@nestjs/config'
 @Injectable()
 export class AuthService {
-  constructor(@Inject('AUTH_SERVICE') 
-   private authClient: ClientKafka,
-   private readonly jwtService: JwtService) {}
-
+  constructor(
+    @Inject('AUTH_SERVICE') 
+    private authClient: ClientKafka,
+    private readonly jwtService: JwtService,
+    @Inject(refreshConfig.KEY)
+    private refreshTokenConfig: ConfigType<typeof refreshConfig>  
+  ) {}
   async onModuleInit() {
         const topics = Object.values(KAFKA_TOPICS.AUTH);
         topics.forEach(t => this.authClient.subscribeToResponseOf(t));
@@ -26,21 +30,24 @@ export class AuthService {
   }
 
   async login(user: UserDto){
-    const { accessToken } = await this.generateTokens(user);
+    const { accessToken, refreshToken } = await this.generateTokens(user);
     return {
       user,
-      accessToken
+      accessToken,
+      refreshToken
     }
   }
 
-  async generateTokens(user: UserDto): Promise<{accessToken: string}>{
+  async generateTokens(user: UserDto): Promise<{accessToken: string, refreshToken: string}>{
     const payload: AuthJwtPayload = { sub: user};
-    const [accessToken] = await Promise.all([
-      this.jwtService.signAsync(payload)
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
+      this.jwtService.signAsync(payload, this.refreshTokenConfig)
     ]);
 
     return {
-      accessToken
+      accessToken,
+      refreshToken
     }
   }
 
