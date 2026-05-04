@@ -11,8 +11,8 @@ export class ConcertsController {
   constructor(private readonly concertsService: ConcertsService) {}
 
   @MessagePattern(KAFKA_TOPICS.CONCERTS.GET_ALL)
-  getAllConcerts(filter: GetConcertDto): Promise<ResponseDto> {
-    return this.concertsService.getAllConcerts(filter);
+  getAllConcerts({filter , userId} : {filter: GetConcertDto, userId: string}): Promise<ResponseDto> {
+    return this.concertsService.getAllConcerts(filter, userId);
   }
 
   @MessagePattern(KAFKA_TOPICS.CONCERTS.GET_BY_ID)

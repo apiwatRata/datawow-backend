@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Get, Delete, Patch, Query } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Delete, Patch, Query, Request } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ConcertsService } from './concerts.service';
 import { CreateConcertDto } from './dto/create-concert.dto';
@@ -19,8 +19,8 @@ export class ConcertsController {
 
   @Roles([Role.USER, Role.ADMIN])
   @Get()
-  findAll(@Query() query: GetConcertDto) {
-    return this.concertsService.getAllConcerts(query);
+  findAll(@Query() query: GetConcertDto, @Request() req) {
+    return this.concertsService.getAllConcerts(query, req.user.id);
   }
 
   @Roles([Role.USER, Role.ADMIN])

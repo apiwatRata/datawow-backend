@@ -1,10 +1,12 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, HasMany } from 'sequelize-typescript';
 import { InferAttributes, InferCreationAttributes } from 'sequelize';
+import { Reservation } from 'apps/reservations/src/entities/reservation.entity';
 
 @Table({ 
   tableName: 'concerts',
   createdAt: 'created_at',
   updatedAt: 'updated_at',
+  timestamps: true,
  })
 export class Concert extends Model<
   InferAttributes<Concert>,
@@ -43,7 +45,7 @@ export class Concert extends Model<
     allowNull: false,
     defaultValue: 0,
   })
-  reserved_seats?: number;
+  reserved_seats: number;
 
   @Column({
     type: DataType.DATE,
@@ -57,5 +59,8 @@ export class Concert extends Model<
     allowNull: true,
   })
   deleted_at?: Date | null;
+
+  @HasMany(() => Reservation, { foreignKey: 'concert_id' })
+  reservations?: Reservation[];
 
 }

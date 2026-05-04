@@ -48,6 +48,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
     useClass: RolesGuard
     }
   ],
-  exports: [JwtModule, JwtAuthGuard, RolesGuard]
+  exports: [JwtModule]
 })
 export class AuthModule {}

@@ -6,7 +6,7 @@ import { IsString, IsNumber, IsOptional, IsDate, IsBoolean } from 'class-validat
 export class ResponseDto{
     
     @IsString()
-    status: string;
+    status: 'error' | 'success';
 
     @IsNumber() 
     status_code: number;
@@ -28,6 +28,10 @@ export class ResponseDto{
     @IsOptional()
     @IsNumber()
     total_pages?: number;
+
+    @IsOptional()
+    @IsNumber()
+    total?: number;
 
     @IsOptional()
     meta?: {

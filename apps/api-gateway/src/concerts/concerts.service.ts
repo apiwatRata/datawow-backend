@@ -20,8 +20,8 @@ export class ConcertsService {
     return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.CREATE, createConcertDto);
   }
 
-  getAllConcerts(filter: GetConcertDto) {
-    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_ALL, {filter});
+  getAllConcerts(filter: GetConcertDto, userId: string) {
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_ALL, {filter, userId});
   }
 
   getConcertById(id: string) {

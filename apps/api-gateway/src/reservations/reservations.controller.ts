@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, UseGuards, Param } from '@nestjs/common';
 import { MessagePattern, Payload  } from '@nestjs/microservices';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from 'libs/contracts/src/reservation/create-reservation.dto';
@@ -12,13 +12,16 @@ export class ReservationsController {
 
   @Roles([Role.USER, Role.ADMIN])
   @Post('reserve/:concert_id/user/:user_id')
-  reserve(@Payload() createReservationDto: CreateReservationDto) {
-    return this.reservationsService.reserve(createReservationDto);
+  reserve(
+    @Param('concert_id') concertId: string,
+    @Param('user_id') userId: string,
+  ) {
+    return this.reservationsService.reserve({concert_id: concertId, user_id: userId});
   }
 
   @Roles([Role.USER, Role.ADMIN])
   @Post('cancel/:reservation_id')
-  cancel(@Payload() reservation_id: string) {
+  cancel( @Param('reservation_id') reservation_id: string) {
     return this.reservationsService.cancel(reservation_id);
   }
 

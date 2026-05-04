@@ -1,4 +1,6 @@
-import { IsOptional, IsString, IsNumber, IsUUID, IsDate } from 'class-validator';
+import { IsOptional, IsString, IsNumber, IsUUID, IsDate, IsArray, ValidateNested} from 'class-validator';
+import { Type } from 'class-transformer';
+import { ReservationDto } from '../reservation/reservation.dto';
 
 export class ConcertDto {
     @IsUUID()
@@ -24,4 +26,10 @@ export class ConcertDto {
     @IsOptional()
     @IsDate()
     deleted_at?: Date;
+
+    @IsOptional()
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => ReservationDto)
+    reservations?: ReservationDto[];
 }

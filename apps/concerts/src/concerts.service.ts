@@ -9,31 +9,46 @@ import { Op } from 'sequelize';
 import { CreateConcertDto } from 'libs/contracts/src/concert/create-concert.dto';
 import { ConcertDto } from 'libs/contracts/src/concert/concert.dto';
 import { plainToInstance } from 'class-transformer';
+import { Reservation } from 'apps/reservations/src/entities/reservation.entity';
 
 @Injectable()
 export class ConcertsService {
   constructor(@InjectModel(Concert) private concertModel: typeof Concert) {}
 
-  async getAllConcerts(filter: GetConcertDto): Promise<ResponseDto> {
+  async getAllConcerts(filter: GetConcertDto, userId: string): Promise<ResponseDto> {
     const limit = filter.limit || 10;
     const offset = filter.offset || 0;
     const order_by = filter.order_by || 'created_at';
     const order_direction = filter.order_direction || 'DESC';
     const concerts = await this.concertModel.findAll({
-      attributes: ['id', 'name', 'description', 'total_seats', 'reserved_seats', 'event_date'],
+      attributes: ['id', 'name', 'description', 'total_seats', 'reserved_seats', 'event_date', 'created_at', 'updated_at'],
       where:{ deleted_at: {
         [Op.is]: null
       } },
       limit,
       offset,
       order: [[order_by, order_direction]],
+      include: [
+        {
+          model: Reservation,
+          where: { user_id: userId, status: 'active' },
+          required: false,
+        },
+      ],
       raw: true,
+      nest: true
     });
+
+    const total = await this.concertModel.count({
+      where: { deleted_at: { [Op.is]: null } },
+      distinct: true,
+    });
+    
     if (concerts.length === 0) {
           return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [] };
     }
     const concertDtos = plainToInstance(ConcertDto, concerts);
-    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: concertDtos };
+    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: concertDtos, total };
   }
 
   async getConcertById(id: string): Promise<ResponseDto> {
@@ -66,7 +81,11 @@ export class ConcertsService {
   }
 
   async updateConcert(id: string, concertDto: ConcertDto): Promise<ResponseDto> {
-    let concert = await this.concertModel.update(concertDto, { where: { id } });
+    let concert = await this.concertModel.update({
+      name: concertDto.name,
+      description: concertDto.description,
+      event_date: concertDto.event_date,
+    }, { where: { id } });
     if (concert['affectedCount'] === 0) {
       return { status: 'error', status_code: ResponseCode.BAD_REQUEST, message: ResponseMessage.INVALID_PARAMETER };
     }

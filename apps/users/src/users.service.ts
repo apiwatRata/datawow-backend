@@ -22,7 +22,12 @@ export class UsersService {
     const password_hash = await hash(registerDto.password, salt);
 
     let user = await this.userModel.create({ email: registerDto.email, password_hash: password_hash });
-    const userDto = plainToInstance(UserDto, user);
+    user = user.toJSON();
+    const userDto = plainToInstance(UserDto, {
+      id: user.id,
+      role: user.role,
+      email: user.email
+    });
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [userDto] };
   }
 }

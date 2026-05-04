@@ -16,7 +16,7 @@ export class ReservationsController {
   }
 
   @MessagePattern(KAFKA_TOPICS.RESERVATIONS.CANCEL)
-  cancel(reservation_id: string): Promise<ResponseDto> {
+  cancel({reservation_id}: {reservation_id:string}): Promise<ResponseDto> {
     return this.reservationsService.cancel(reservation_id);
   }
 

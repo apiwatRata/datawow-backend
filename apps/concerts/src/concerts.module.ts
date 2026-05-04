@@ -3,6 +3,8 @@ import { ConcertsController } from './concerts.controller';
 import { ConcertsService } from './concerts.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Concert } from './entities/concert.entity';
+import { Reservation } from 'apps/reservations/src/entities/reservation.entity';
+import { User } from 'apps/users/src/entities/user.entity';
 
 @Module({
   imports: [
@@ -14,9 +16,9 @@ import { Concert } from './entities/concert.entity';
           password: 'p@ssw0rd',
           database: 'datawow',
           logging: false,
-          models: [Concert],
+          models: [Concert, Reservation, User],
         }),
-        SequelizeModule.forFeature([Concert]),
+        SequelizeModule.forFeature([Concert, Reservation, User]),
       ],
   controllers: [ConcertsController],
   providers: [ConcertsService],

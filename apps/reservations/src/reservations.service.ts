@@ -8,28 +8,43 @@ import { ResponseCode } from 'libs/common/src/enums/response_code.enum';
 import { ResponseMessage } from 'libs/common/src/enums/response_message.enum';
 import { plainToInstance } from 'class-transformer';
 import { ReservationDto } from 'libs/contracts/src/reservation/reservation.dto';
+import { Concert } from 'apps/concerts/src/entities/concert.entity';
 
 @Injectable()
 export class ReservationsService {
-  constructor(@InjectModel(Reservation) private reservationModel: typeof Reservation) {}
+  constructor(
+    @InjectModel(Reservation) private reservationModel: typeof Reservation,
+    @InjectModel(Concert) private concertModel: typeof Concert
+  ) {}
 
   async reserve(createReservationDto: CreateReservationDto): Promise<ResponseDto> {
-    const check_dup = await this.reservationModel.findOne({ where: { concert_id: createReservationDto.concert_id, user_id: createReservationDto.user_id } });
+    const check_dup = await this.reservationModel.findOne({ where: { concert_id: createReservationDto.concert_id, user_id: createReservationDto.user_id, status: 'active' } });
     if (check_dup) {
       return { status: 'error', status_code: ResponseCode.CONFLICT, message: ResponseMessage.CONFLICT };
     }
     let reserved = await this.reservationModel.create({ concert_id: createReservationDto.concert_id, user_id: createReservationDto.user_id });
+    await this.concertModel.increment(
+      { reserved_seats: 1 },
+      { where: { id: createReservationDto.concert_id } }
+    );
     const reservationDto = plainToInstance(ReservationDto, reserved);
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [reservationDto] };
   }
 
   async cancel(reservation_id: string): Promise<ResponseDto> {
-    const reserved = await this.reservationModel.findByPk(reservation_id);
+    const reserved = await this.reservationModel.findOne({ where : {id: reservation_id}});
     if (!reserved) {
       return { status: 'error', status_code: ResponseCode.NOT_FOUND, message: ResponseMessage.NOT_FOUND };
     }
+    const concert = await this.concertModel.findOne({ where : {id: reserved.dataValues?.concert_id}});
+    if (!concert) {
+      return { status: 'error', status_code: ResponseCode.NOT_FOUND, message: ResponseMessage.NOT_FOUND };
+    }
+    if (concert.reserved_seats > 0) {
+      await concert.decrement('reserved_seats', { by: 1 });
+    }
     await reserved.update({ status: 'cancelled' });
-    const reservationDto = plainToInstance(ReservationDto, reserved);
+    const reservationDto = plainToInstance(ReservationDto, reserved.dataValues);
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [reservationDto] };
   }
 

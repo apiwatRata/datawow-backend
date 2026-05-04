@@ -28,6 +28,7 @@ export class AuthController {
     return "Now you can access this protected API";
   }
 
+  @Public()
   @UseGuards(RefreshAuthGuard)
   @Post("refresh")
   refreshToken(@Request() req) {
