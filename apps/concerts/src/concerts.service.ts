@@ -10,10 +10,15 @@ import { CreateConcertDto } from 'libs/contracts/src/concert/create-concert.dto'
 import { ConcertDto } from 'libs/contracts/src/concert/concert.dto';
 import { plainToInstance } from 'class-transformer';
 import { Reservation } from 'apps/reservations/src/entities/reservation.entity';
+import { Sequelize } from 'sequelize-typescript';
+
 
 @Injectable()
 export class ConcertsService {
-  constructor(@InjectModel(Concert) private concertModel: typeof Concert) {}
+  constructor(@InjectModel(
+    Concert) private concertModel: typeof Concert,
+    private readonly sequelize: Sequelize,
+  ) {}
 
   async getAllConcerts(filter: GetConcertDto, userId: string): Promise<ResponseDto> {
     const limit = filter.limit || 10;
@@ -49,6 +54,19 @@ export class ConcertsService {
     }
     const concertDtos = plainToInstance(ConcertDto, concerts);
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: concertDtos, total };
+  }
+
+  async getSeats(): Promise<ResponseDto>{
+    const result = await this.concertModel.findOne({
+      attributes: [
+        [this.sequelize.fn('SUM', this.sequelize.col('total_seats')), 'total_seats'],
+        [this.sequelize.fn('SUM', this.sequelize.col('reserved_seats')), 'reserved_seats'],
+      ],
+      where: { deleted_at: { [Op.is]: null } },
+      raw: true,
+    });
+
+    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, total_seats:result?.total_seats, reserve_seats:result?.reserved_seats };
   }
 
   async getConcertById(id: string): Promise<ResponseDto> {

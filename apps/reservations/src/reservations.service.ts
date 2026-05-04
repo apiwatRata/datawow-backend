@@ -9,12 +9,14 @@ import { ResponseMessage } from 'libs/common/src/enums/response_message.enum';
 import { plainToInstance } from 'class-transformer';
 import { ReservationDto } from 'libs/contracts/src/reservation/reservation.dto';
 import { Concert } from 'apps/concerts/src/entities/concert.entity';
+import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
 export class ReservationsService {
   constructor(
     @InjectModel(Reservation) private reservationModel: typeof Reservation,
-    @InjectModel(Concert) private concertModel: typeof Concert
+    @InjectModel(Concert) private concertModel: typeof Concert,
+    private readonly sequelize: Sequelize,
   ) {}
 
   async reserve(createReservationDto: CreateReservationDto): Promise<ResponseDto> {
@@ -84,4 +86,12 @@ export class ReservationsService {
     const data = plainToInstance(ReservationDto, reservations);
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: data };
   } 
+
+  async getTotalCanceledSeats(): Promise<ResponseDto>{
+    const result = await this.reservationModel.count({
+          where: { status: 'cancelled' },
+    });
+    
+    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, cancelled_seats: result };
+  }
 }

@@ -29,4 +29,9 @@ export class ReservationsController {
   getAllReservations(getReservationDto: GetReservationDto): Promise<ResponseDto> {
     return this.reservationsService.getAllReservations(getReservationDto);
   }
+
+  @MessagePattern(KAFKA_TOPICS.RESERVATIONS.GET_CANCELLED_SEAT)
+  getTotalCanceledSeats() : Promise<ResponseDto> {
+    return this.reservationsService.getTotalCanceledSeats();
+  }
 }

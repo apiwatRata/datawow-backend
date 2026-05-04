@@ -20,6 +20,11 @@ export class ConcertsController {
     return this.concertsService.getConcertById(id);
   }
 
+  @MessagePattern(KAFKA_TOPICS.CONCERTS.GET_SEAT)
+  getSeats(): Promise<ResponseDto> {
+    return this.concertsService.getSeats();
+  }
+
   @MessagePattern(KAFKA_TOPICS.CONCERTS.CREATE)
   createConcert(createConcertDto: CreateConcertDto): Promise<ResponseDto> {
     return this.concertsService.createConcert(createConcertDto);

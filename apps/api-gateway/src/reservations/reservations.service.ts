@@ -30,4 +30,7 @@ export class ReservationsService {
     return this.reservationsClient.send(KAFKA_TOPICS.RESERVATIONS.GET_ALL, getReservationDto);
   }
 
+  getTotalCanceledSeats() {
+      return this.reservationsClient.send(KAFKA_TOPICS.RESERVATIONS.GET_CANCELLED_SEAT,{});
+  }
 }

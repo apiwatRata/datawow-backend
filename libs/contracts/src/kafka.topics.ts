@@ -1,6 +1,6 @@
 export const KAFKA_TOPICS = {
   AUTH:   { LOGIN: 'auth.login', VERIFY: 'auth.verify' },
   USERS:  { REGISTER: 'users.register', FIND_ALL: 'users.findAll' },
-  CONCERTS: { GET_BY_ID: 'concerts.get_concert_by_id', CREATE: 'concerts.create_concert', DELETE: 'concerts.delete_concert', UPDATE: 'concerts.update_concert', GET_ALL: 'concerts.get_all_concerts' },
-  RESERVATIONS: { RESERVE: 'reservations.reserve', CANCEL: 'reservations.cancel', GET_PERSONAL: 'reservations.get_personal_reservations', GET_ALL: 'reservations.get_all_reservations' },
+  CONCERTS: { GET_BY_ID: 'concerts.get_concert_by_id', CREATE: 'concerts.create_concert', DELETE: 'concerts.delete_concert', UPDATE: 'concerts.update_concert', GET_ALL: 'concerts.get_all_concerts', GET_SEAT: 'concerts.get_seats' },
+  RESERVATIONS: { RESERVE: 'reservations.reserve', CANCEL: 'reservations.cancel', GET_PERSONAL: 'reservations.get_personal_reservations', GET_ALL: 'reservations.get_all_reservations', GET_CANCELLED_SEAT: 'reservations.get_cancelled_seats' },
 };

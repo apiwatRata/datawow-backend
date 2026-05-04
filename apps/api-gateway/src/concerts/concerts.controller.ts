@@ -23,6 +23,12 @@ export class ConcertsController {
     return this.concertsService.getAllConcerts(query, req.user.id);
   }
 
+  @Roles([Role.ADMIN])
+  @Get('seats')
+  getSeats() {
+    return this.concertsService.getSeats();
+  }
+
   @Roles([Role.USER, Role.ADMIN])
   @Get(':id')
   findOne(@Payload() id: string) {

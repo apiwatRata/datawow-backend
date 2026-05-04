@@ -24,6 +24,10 @@ export class ConcertsService {
     return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_ALL, {filter, userId});
   }
 
+  getSeats(){
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_SEAT,{});
+  }
+
   getConcertById(id: string) {
     return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_BY_ID, id);
   }

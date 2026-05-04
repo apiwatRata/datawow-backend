@@ -37,4 +37,10 @@ export class ReservationsController {
     return this.reservationsService.getAllReservations(getReservationDto);
   }
 
+  @Roles([Role.ADMIN])
+  @Get('cancelled')
+  getTotalCanceledSeats() {
+    return this.reservationsService.getTotalCanceledSeats();
+  }
+
 }

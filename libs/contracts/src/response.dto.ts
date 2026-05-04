@@ -34,6 +34,18 @@ export class ResponseDto{
     total?: number;
 
     @IsOptional()
+    @IsNumber()
+    total_seats?: number;
+
+    @IsOptional()
+    @IsNumber()
+    reserve_seats?: number;
+
+    @IsOptional()
+    @IsNumber()
+    cancelled_seats?: number;
+
+    @IsOptional()
     meta?: {
 
         @IsBoolean()
