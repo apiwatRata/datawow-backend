@@ -39,4 +39,9 @@ export class ConcertsController {
   updateConcert(data: { id: string, concertDto: ConcertDto }): Promise<ResponseDto> {
     return this.concertsService.updateConcert(data.id, data.concertDto);
   } 
+
+  @MessagePattern(KAFKA_TOPICS.CONCERTS.GET_ALL_ADMIN)
+  adminGetConcerts(filter: GetConcertDto): Promise<ResponseDto>{
+    return this.concertsService.adminGetConcerts(filter);
+  }
 }

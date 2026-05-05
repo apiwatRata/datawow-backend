@@ -9,6 +9,7 @@ import { ResponseMessage } from 'libs/common/src/enums/response_message.enum';
 import { plainToInstance } from 'class-transformer';
 import { ReservationDto } from 'libs/contracts/src/reservation/reservation.dto';
 import { Concert } from 'apps/concerts/src/entities/concert.entity';
+import { User } from 'apps/users/src/entities/user.entity';
 import { Sequelize } from 'sequelize-typescript';
 
 @Injectable()
@@ -78,7 +79,18 @@ export class ReservationsService {
       limit,
       offset,
       order: [[order_by, order_direction]],
+      include: [
+        {
+          model: Concert,
+          required: true,
+        },
+        {
+          model: User,
+          required: true,
+        }
+      ],
       raw: true,
+      nest: true
     });
     if (reservations.length === 0) {
           return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [] };

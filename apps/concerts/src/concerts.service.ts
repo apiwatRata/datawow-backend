@@ -56,6 +56,34 @@ export class ConcertsService {
     return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: concertDtos, total };
   }
 
+  async adminGetConcerts(filter: GetConcertDto): Promise<ResponseDto> {
+    const limit = filter.limit || 10;
+    const offset = filter.offset || 0;
+    const order_by = filter.order_by || 'created_at';
+    const order_direction = filter.order_direction || 'DESC';
+    const concerts = await this.concertModel.findAll({
+      attributes: ['id', 'name', 'description', 'total_seats', 'reserved_seats', 'event_date', 'created_at', 'updated_at'],
+      where:{ deleted_at: {
+        [Op.is]: null
+      } },
+      limit,
+      offset,
+      order: [[order_by, order_direction]],
+      raw: true
+    });
+
+    const total = await this.concertModel.count({
+      where: { deleted_at: { [Op.is]: null } },
+      distinct: true,
+    });
+    
+    if (concerts.length === 0) {
+          return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: [] };
+    }
+    const concertDtos = plainToInstance(ConcertDto, concerts);
+    return { status: 'success', status_code: ResponseCode.SUCCESS, message: ResponseMessage.SUCCESS, data: concertDtos, total };
+  }
+
   async getSeats(): Promise<ResponseDto>{
     const result = await this.concertModel.findOne({
       attributes: [

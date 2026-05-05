@@ -32,11 +32,15 @@ export class ConcertsService {
     return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_BY_ID, id);
   }
 
-  updateConcert(id: string, concertDto: ConcertDto) {
+  updateConcert(id: string, concertDto: CreateConcertDto) {
     return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.UPDATE, { id, concertDto });
   }
 
   deleteConcert(id: string) {
     return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.DELETE, id);
+  }
+
+  adminGetConcerts(filter: GetConcertDto) {
+    return this.concertsClient.send(KAFKA_TOPICS.CONCERTS.GET_ALL_ADMIN, filter);
   }
 }

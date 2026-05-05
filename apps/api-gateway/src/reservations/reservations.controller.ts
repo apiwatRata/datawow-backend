@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, UseGuards, Param, Query } from '@nestjs/common';
 import { MessagePattern, Payload  } from '@nestjs/microservices';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from 'libs/contracts/src/reservation/create-reservation.dto';
@@ -33,7 +33,7 @@ export class ReservationsController {
 
   @Roles([Role.ADMIN])
   @Get()
-  getAllReservations(@Payload() getReservationDto: GetReservationDto) {
+  getAllReservations(@Query() getReservationDto: GetReservationDto) {
     return this.reservationsService.getAllReservations(getReservationDto);
   }
 

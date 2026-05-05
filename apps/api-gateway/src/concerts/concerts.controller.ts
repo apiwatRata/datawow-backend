@@ -1,7 +1,7 @@
-import { Controller, Post, UseGuards, Get, Delete, Patch, Query, Request } from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Delete, Patch, Query, Request, Param, Body } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { ConcertsService } from './concerts.service';
-import { CreateConcertDto } from './dto/create-concert.dto';
+import { CreateConcertDto } from 'libs/contracts/src/concert/create-concert.dto';
 import { ConcertDto } from 'libs/contracts/src/concert/concert.dto';
 import { GetConcertDto } from 'libs/contracts/src/concert/get-concert.dto';
 import { Role } from "libs/common/src/enums/roles.enum"
@@ -37,7 +37,7 @@ export class ConcertsController {
 
   @Roles([Role.ADMIN])
   @Patch(':id')
-  update(@Payload() id: string , updateConcertDto: ConcertDto) {
+  update(@Param('id') id: string , @Body() updateConcertDto: CreateConcertDto) {
     return this.concertsService.updateConcert(id, updateConcertDto);
   }
 
@@ -45,5 +45,11 @@ export class ConcertsController {
   @Delete(':id')
   remove(@Payload() id: string) {
     return this.concertsService.deleteConcert(id);
+  }
+
+  @Roles([Role.ADMIN])
+  @Get('admin')
+  adminGetConcerts(@Query() query: GetConcertDto){
+    return this.concertsService.adminGetConcerts(query);
   }
 }
